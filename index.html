@@ -3,381 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nhân vật</title>
+    <title>Aimlock mode</title>
     <style>
         body {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-        }
-        .character {
-            position: relative;
-            display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            position: relative; 
+        }
+        h1 {
+            margin-bottom: 15px; 
+            font-size: 36px; 
+            color: #333; 
+            animation: colorChange 2s infinite; 
+            position: absolute; 
+            top: 15px; 
+            z-index: 3; /* Đặt tiêu đề trên tất cả các phần tử khác */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Hiệu ứng đổ bóng */
+            font-family: 'Arial', sans-serif; /* Kiểu chữ */
+            text-align: center; /* Căn giữa tiêu đề */
+        }
+        @keyframes colorChange {
+            0% { color: #ff0000; }
+            25% { color: #00ff00; }
+            50% { color: #0000ff; }
+            75% { color: #ff00ff; }
+            100% { color: #ff0000; }
+        }
+        .npc {
+            width: 100px;
+            height: 300px;
+            position: relative;
+            margin-bottom: 20px;
+            z-index: 2; /* Đặt NPC trên hình ảnh */
+            top: 15px; /* Lùi NPC xuống 5px */
+        }
+        .head, .body, .arm, .leg {
+            position: absolute;
+            border-radius: 10px;
+            border: 2px solid black; /* Viền cho tất cả bộ phận */
         }
         .head {
-            width: 30px;
-            height: 30px;
-            background-color: yellow;
-            border-radius: 10px;
-            border: 3px solid black;
+            width: 50px;
+            height: 50px;
+            background-color: #ffcc00;
+            top: 0;
+            left: 25px;
             display: flex;
-            justify-content: center;
             align-items: center;
-            margin-bottom: 2px;
-            transition: background-color 0.3s;
-        }
-        .head::after {
-            content: "☠";
-            font-size: 30px;
-            color: black;
+            justify-content: center;
         }
         .body {
-            width: 40px;
-            height: 50px;
-            background-color: deepskyblue;
-            border-radius: 10px;
-            border: 3px solid black;
+            width: 70px;
+            height: 100px;
+            background-color: #00ccff;
+            top: 50px;
+            left: 15px;
+        }
+        .arm {
+            width: 22px; /* Tăng chiều rộng tay lên 2px */
+            height: 100px; /* Chiều dài tay */
+            background-color: #33cc33; /* Màu giống chân */
+            top: 50px;
+        }
+        .arm.left {
+            left: -6px; /* Kéo tay trái ra ngoài 6px */
+        }
+        .arm.right {
+            right: -8px; /* Kéo tay phải ra ngoài 8px (6px + 2px) */
+        }
+        .leg {
+            width: 30px;
+            height: 100px;
+            background-color: #33cc33; /* Màu chân */
+            top: 150px; /* Xích lên trên */
+        }
+        .leg.left {
+            left: 10px;
+        }
+        .leg.right {
+            right: 10px;
+        }
+        .hidden {
+            display: none; /* Lớp để ẩn hình ảnh */
+        }
+        #npcImage {
+            position: absolute; /* Đặt hình ảnh ở vị trí tuyệt đối */
+            top: 0; /* Đặt hình ảnh ở trên cùng */
+            left: 50%; /* Căn giữa hình ảnh */
+            transform: translateX(-50%); /* Căn giữa hình ảnh */
+            width: 300px; /* Kích thước hình ảnh lớn hơn */
+            z-index: 1; /* Đặt hình ảnh dưới NPC */
+        }
+        .icon {
+            font-size: 30px; /* Kích thước biểu tượng */
+            position: absolute;
+            top: 10px; /* Điều chỉnh vị trí biểu tượng trên đầu */
+            left: 50%; /* Căn giữa biểu tượng */
+            transform: translateX(-50%); /* Căn giữa biểu tượng */
+        }
+        .button-container {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            flex-wrap: wrap; /* Để các nút có thể xuống hàng */
+            justify-content: center; /* Căn giữa các nút */
+            margin-top: 0px; /* Khoảng cách trên các nút */
         }
-        .arms {
-            display: flex;
-            gap: 2px;
+        button {
+            margin: 10px;
+            padding: 15px 30px; /* Tăng kích thước nút */
+            font-size: 16px; /* Kích thước chữ */
+            cursor: pointer; /* Con trỏ khi hover */
+            background-color: transparent; /* Màu nền ban đầu */
+            border: 2px solid #000; /* Viền cho nút */
+            transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
         }
-        .arm, .leg {
-            width: 15px;
-            height: 40px;
-            background-color: limegreen;
-            border-radius: 10px;
-            border: 3px solid black;
-        }
-        .legs {
-            display: flex;
-            gap: 2px;
-            margin-top: 2px;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="character">
-        <div class="head" id="head"></div>
-        <div class="arms">
-            <div class="arm"></div>
-            <div class="body"></div>
-            <div class="arm"></div>
-        </div>
-        <div class="legs">
-            <div class="leg"></div>
-            <div class="leg"></div>
-        </div>
-    </div>
-
-    <script>
-        document.body.addEventListener("click", function() {
-            let head = document.getElementById("head");
-            head.style.backgroundColor = (head.style.backgroundColor === "red") ? "yellow" : "red";
-        });
-    </script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu Config</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: black;
-            color: white;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        h1 {
-            color: #8A2BE2;
-            text-shadow: 2px 2px 5px purple;
-            margin-top: 20px;
-        }
-
-        .btn-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 30px;
-        }
-        .btn, .toggle-btn {
-            background: linear-gradient(45deg, red, yellow, green, cyan, blue, magenta);
-            background-size: 400%;
-            color: white;
-            font-size: 18px;
-            padding: 12px 25px;
-            border-radius: 10px;
-            cursor: pointer;
-            width: 200px;
-            text-align: center;
-            animation: rainbow 3s infinite linear;
-            transition: transform 0.2s, box-shadow 0.3s;
-            border: 2px solid transparent;
-        }
-        .btn:hover, .toggle-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0px 0px 10px white;
-        }
-
-        @keyframes rainbow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .slider-container {
-            margin-top: 20px;
-            width: 80%;
-            max-width: 400px;
-        }
-        .slider {
-            width: 100%;
-            appearance: none;
-            height: 8px;
-            background: linear-gradient(to right, red, yellow, green, cyan, blue);
-            border-radius: 5px;
-            outline: none;
-            transition: 0.3s;
-        }
-        .slider-value {
-            margin-top: 5px;
-            font-size: 16px;
-        }
-
-        .progress-container {
-            width: 300px;
-            background: #222;
-            border-radius: 10px;
-            margin-top: 20px;
-            display: none;
-            overflow: hidden;
-            border: 2px solid white;
-        }
-        .progress-bar {
-            width: 0%;
-            height: 15px;
-            background: linear-gradient(90deg, green, cyan, blue, violet);
-            transition: width 0.05s linear;
-        }
-        .progress-text {
-            margin-top: 10px;
-            font-size: 20px;
-            font-weight: bold;
-            text-align: center;
+        button.active {
+            background-color: #4caf50; /* Màu xanh khi nút được chọn */
+            color: white; /* Màu chữ khi chọn */
         }
         .credit {
-    font-size: 16px;
-    color: #FFD700;
-    text-shadow: 0 0 5px #FFD700, 0 0 10px #FF8C00;
-    font-weight: bold;
-    animation: blink 1.5s infinite alternate;
-}
-
-@keyframes blink {
-    0% { opacity: 1; }
-    100% { opacity: 0.5; }
-}
-    </style>
-</head>
-    <title>Menu Config</title>
-    <style>
-        @keyframes rainbow {
-            0% { color: red; text-shadow: 0 0 10px red; }
-            14% { color: orange; text-shadow: 0 0 10px orange; }
-            28% { color: yellow; text-shadow: 0 0 10px yellow; }
-            42% { color: green; text-shadow: 0 0 10px green; }
-            57% { color: cyan; text-shadow: 0 0 10px cyan; }
-            71% { color: blue; text-shadow: 0 0 10px blue; }
-            85% { color: violet; text-shadow: 0 0 10px violet; }
-            100% { color: red; text-shadow: 0 0 10px red; }
-        }
-
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: black;
-        }
-
-        h1 {
-            font-size: 50px;
-            font-weight: bold;
-            animation: rainbow 2s infinite linear;
+            margin-top: 20px; /* Khoảng cách trên dòng credit */
+            font-size: 20px; /* Kích thước chữ cho dòng credit */
+            color: #777; /* Màu chữ cho dòng credit */
+            text-align: center; /* Căn giữa dòng credit */
         }
     </style>
 </head>
 <body>
-<h1>Menu Config</h1>
-<p class="credit">Cre: DuyAnh🇻🇳
-Zalo : 035.8989.747</p>
-    <div class="btn-container">
-        <button class="btn" id="load-btn">Tải Config</button>
-        <button class="btn" id="save-btn">Lưu Cài Đặt</button>
-        <button class="toggle-btn" id="norecoil-btn">Norecoil: OFF</button>
-        <button class="toggle-btn" id="aimbot-btn">Aimbot: OFF</button>
-        <button class="toggle-btn" id="aimlock-btn">Aimlock: OFF</button>
-        <button class="toggle-btn" id="overhead-btn">OverHead: OFF</button>
+
+    <h1>DuyAnhmakeConfig</h1> <!-- Tiêu đề menu -->
+
+    <img id="npcImage" src="https://img.upanh.tv/2025/01/20/4774CA97-678E-429D-8F46-8DF853ABD1FC.png" alt="Hình ảnh NPC" class="hidden">
+
+    <div class="npc">
+        <div class="head">
+            <span class="icon">⚙️</span> <!-- Thêm biểu tượng ở đây -->
+        </div>
+        <div class="body"></div>
+        <div class="arm left"></div>
+        <div class="arm right"></div>
+        <div class="leg left"></div>
+        <div class="leg right"></div>
+    </div>
+    
+    <div class="button-container">
+        <button onclick="toggleHead(this)">HeadShot</button>
+        <button onclick="toggleBody(this)">Body</button>
+        <button onclick="window.location.href='https://zalo.me/0368989747'">🩴 Admin</button>
+        <button onclick="activateButton(this)">Aimlock</button> <!-- Nút Aimlock -->
     </div>
 
-    <div class="progress-container">
-        <div class="progress-bar"></div>
-    </div>
-    <div class="progress-text">Đang tải: 0%</div>
-
-    <div class="slider-container">
-        <label>DPI: <span id="dpi-value">Mặc định</span></label>
-        <input type="range" min="100" max="2440" value="100" class="slider" id="dpi-slider">
-    </div>
-
-    <div class="slider-container">
-        <label>FPS: <span id="fps-value">30</span></label>
-        <input type="range" min="30" max="144" value="30" class="slider" id="fps-slider">
-    </div>
-
-    <div class="slider-container">
-        <label>Hz: <span id="hz-value">60</span></label>
-        <input type="range" min="60" max="90" value="60" class="slider" id="hz-slider">
-    </div>
-
-    <div class="slider-container">
-        <label>Cấu hình: <span id="config-value">Thấp</span></label>
-        <input type="range" min="1" max="4" value="1" class="slider" id="config-slider">
-    </div>
-    <div class="progress-container">
-        <div class="progress-bar" id="progress-bar">1%</div>
-    </div>
-    <div id="save-alert" style="
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: rgba(0, 0, 0, 0.8);
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        font-size: 18px;
-        text-align: center;
-        width: 300px;
-        box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.3);
-    ">
-        <p>✅ Đã cài đặt xong!</p>
-        <p>🎮 Mời bạn vào game trải nghiệm!</p>
-        <button onclick="closeAlert()" style="
-            background: #8A2BE2;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-        ">OK</button>
-    </div>
+    <div class="credit">DUYANH H4X</div> <!-- Dòng credit -->
 
     <script>
-        function startLoading() {
-            let progressBar = document.getElementById("progress-bar");
-            let progressContainer = document.querySelector(".progress-container");
-            progressContainer.style.display = "block";
-            let progress = 1;
-            let interval = setInterval(() => {
-                progress++;
-                progressBar.style.width = progress + "%";
-                progressBar.innerText = progress + "%";
-                progressBar.style.background = `hsl(${progress * 3.6}, 100%, 50%)`;
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    progressBar.innerText = "Hoàn thành!";
-                    progressBar.classList.add("shake");
-                }
-            }, 50);
+        let headShotActive = false;
+        let bodyActive = false;
+
+        function toggleHead(button) {
+            const head = document.querySelector('.head');
+            const npcImage = document.getElementById('npcImage');
+            headShotActive = !headShotActive;
+
+            head.style.backgroundColor = headShotActive ? 'red' : '#ffcc00'; // Đổi màu đầu
+
+            // Hiện hoặc ẩn hình ảnh
+            npcImage.classList.toggle('hidden', !headShotActive);
+
+            // Đổi màu nút
+            activateButton(button);
         }
 
-        function saveSettings() {
-            document.getElementById("save-alert").style.display = "block";
+        function toggleBody(button) {
+            const body = document.querySelector('.body');
+            bodyActive = !bodyActive;
+            body.style.backgroundColor = bodyActive ? 'red' : '#00ccff'; // Đổi màu thân
+
+            // Đổi màu nút
+            activateButton(button);
         }
 
-        function closeAlert() {
-            document.getElementById("save-alert").style.display = "none";
-        }
-
-        document.getElementById("save-btn").addEventListener("click", saveSettings);
-    </script>
-    <script>
-        function startDownload() {
-            let progressBar = document.querySelector(".progress-bar");
-            let progressContainer = document.querySelector(".progress-container");
-            let progressText = document.querySelector(".progress-text");
-            let progress = 1;
-
-            progressContainer.style.display = "block";
-            progressBar.style.width = "1%";
-            progressText.innerText = "Đang tải: 1%";
-
-            let interval = setInterval(() => {
-                progress += 1; 
-                if (progress > 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    progressText.innerText = "Tải hoàn tất!";
-                } else {
-                    progressBar.style.width = progress + "%";
-                    progressText.innerText = "Đang tải: " + progress + "%";
-                }
-            }, 50); 
-        }
-
-        document.getElementById("load-btn").addEventListener("click", startDownload);
-
-        function toggleButton(button) {
-            if (button.innerText.includes("OFF")) {
-                button.innerText = button.innerText.replace("OFF", "ON");
-            } else {
-                button.innerText = button.innerText.replace("ON", "OFF");
-            }
-        }
-
-        document.querySelectorAll(".toggle-btn").forEach(button => {
-            button.addEventListener("click", () => toggleButton(button));
-        });
-
-        function updateSliderValue(slider, valueElement, type) {
-            slider.addEventListener("input", function () {
-                if (type === "DPI") {
-                    valueElement.innerText = this.value == 100 ? "Mặc định" : this.value;
-                } else if (type === "FPS" || type === "Hz") {
-                    valueElement.innerText = this.value;
-                } else if (type === "Config") {
-                    const configLevels = ["Thấp", "Tối Ưu", "Cao", "Gaming"];
-                    valueElement.innerText = configLevels[this.value - 1];
+        function activateButton(button) {
+            // Bỏ lớp active từ tất cả nút (trừ nút Admin)
+            const buttons = document.querySelectorAll('.button-container button');
+            buttons.forEach(btn => {
+                if (btn !== document.querySelector('button:nth-child(3)')) {
+                    btn.classList.remove('active');
                 }
             });
-        }
 
-        updateSliderValue(document.getElementById("dpi-slider"), document.getElementById("dpi-value"), "DPI");
-        updateSliderValue(document.getElementById("fps-slider"), document.getElementById("fps-value"), "FPS");
-        updateSliderValue(document.getElementById("hz-slider"), document.getElementById("hz-value"), "Hz");
-        updateSliderValue(document.getElementById("config-slider"), document.getElementById("config-value"), "Config");
+            // Thêm lớp active cho nút được nhấn
+            button.classList.add('active');
+        }
     </script>
+
 </body>
 </html>
